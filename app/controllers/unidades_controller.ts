@@ -7,12 +7,30 @@ export default class UnidadesController {
     return await Unidade.all()
   }
 
-  public async store({ auth, request }: HttpContext) {
-    await auth.use('api').authenticate()  // Verifica o token
+  public async store({ auth, request, response }: HttpContext) {
+    await auth.use('api').authenticate()
     const data = request.only(['nome'])
-    const unidade = await Unidade.create(data)
-    return unidade
+  
+    try {
+      const unidade = await Unidade.create(data)
+      return response.status(201).json({
+        message: 'Unidade criada com sucesso',
+        data: unidade,
+      })
+    } catch (error) {
+      if (error.code === '23505') { // Código de erro do PostgreSQL para chave duplicada
+        return response.status(400).json({
+          message: 'Já existe uma unidade com esse nome.',
+        })
+      }
+  
+      return response.status(500).json({
+        message: 'Erro ao criar unidade.',
+        error: error.message,
+      })
+    }
   }
+  
 
   public async show({ auth, params }: HttpContext) {
     await auth.use('api').authenticate()  // Verifica o token
