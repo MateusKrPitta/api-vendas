@@ -28,10 +28,11 @@ router.put('/usuarios/:id/reativar', [UsuariosController, 'reativar'])
 
 router.resource('fornecedores', FornecedoresController).apiOnly()
 
-
 router.group(() => {
+  // Rotas de Vendas
   router.post('/vendas', [VendasController, 'store'])
-  router.get('/vendas/dia', [VendasController, 'vendasPorDia'])
+  router.get('/vendas/dia', [VendasController, 'vendasPorDia']) // Agora com filtro de unidadeId
+  router.get('/vendas/por-unidade', [VendasController, 'vendasPorUnidade']) // Nova rota
   router.get('/vendas/:id', [VendasController, 'show'])
   router.put('/vendas/:id', [VendasController, 'update'])
   router.delete('/vendas/:id', [VendasController, 'destroy'])
@@ -55,7 +56,7 @@ router.group(() => {
   router.post('/relatorios-mensais/gerar/:unidadeId/:ano/:mes', [RelatoriosMensaisController, 'generate'])
   router.delete('/relatorios-mensais/:id', [RelatoriosMensaisController, 'destroy'])
   router.get('/relatorios-mensais/unidade/:unidadeId', [RelatoriosMensaisController, 'porUnidade'])
-  .where('unidadeId', router.matchers.number())
+    .where('unidadeId', router.matchers.number())
   
   router.get('/relatorios-saidas/unidade/:unidadeId', [RelatoriosSaidasController, 'porUnidade'])
   router.post('/relatorios-saidas/gerar/:unidadeId/:ano/:mes', [RelatoriosSaidasController, 'gerarRelatorioMensal'])

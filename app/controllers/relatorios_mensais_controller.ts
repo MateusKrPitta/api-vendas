@@ -203,32 +203,31 @@ export default class RelatoriosMensaisController {
     const { unidadeId } = params
 
     try {
-      // Verifica se a unidade existe
-      const unidade = await Unidade.find(unidadeId)
-      if (!unidade) {
-        return response.status(404).json({
-          success: false,
-          message: 'Unidade não encontrada'
+        // Verifica se a unidade existe
+        const unidade = await Unidade.find(unidadeId)
+        if (!unidade) {
+            return response.status(404).json({
+                success: false,
+                message: 'Unidade não encontrada'
+            })
+        }
+
+        // Calcula em tempo real (não usa relatórios salvos)
+        const relatorios = await this._calcularRelatoriosEmTempoReal(unidadeId)
+
+        return response.status(200).json({
+            success: true,
+            message: 'Dados calculados com sucesso',
+            data: relatorios
         })
-      }
-
-      // Calcula em tempo real (não usa relatórios salvos)
-      const relatorios = await this._calcularRelatoriosEmTempoReal(unidadeId)
-
-      return response.status(200).json({
-        success: true,
-        message: 'Dados calculados com sucesso',
-        data: relatorios
-      })
     } catch (error) {
-      return response.status(500).json({
-        success: false,
-        message: 'Erro ao calcular relatórios',
-        error: error.message
-      })
+        return response.status(500).json({
+            success: false,
+            message: 'Erro ao calcular relatórios',
+            error: error.message
+        })
     }
-  }
-
+}
   private async _calcularRelatoriosEmTempoReal(unidadeId: number) {
     const vendas = await Venda.query()
       .where('unidade_id', unidadeId)

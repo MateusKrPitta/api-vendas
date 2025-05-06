@@ -84,27 +84,34 @@ export default class SaidasController {
       saidas
     }))
   }
-  public async store({ request }: HttpContext) {
-    const data = request.only([
-      'descricao',
-      'valor',
-      'unidade_id',
-      'forma_pagamento',
-      'data_saida'
-    ]) as SaidaData
-  
-    // Garante que data_saida seja um DateTime, se fornecida
-    if (data.data_saida && typeof data.data_saida === 'string') {
-      const parsedDate = DateTime.fromISO(data.data_saida)
-      if (!parsedDate.isValid) {
-        throw new Error('Formato de data inválido. Use YYYY-MM-DD')
-      }
-      data.data_saida = parsedDate
-    }
-    
-  
-    return await Saida.create(data)
+// Modifique o método store para garantir que a unidade_id seja válida
+public async store({ request, response }: HttpContext) {
+  const payload = request.only([
+    'descricao',
+    'valor',
+    'unidade_id',
+    'forma_pagamento',
+    'data_saida'
+  ]) as SaidaData
+
+  // Verificar se a unidade existe
+  const unidade = await Unidade.find(payload.unidade_id)
+  if (!unidade) {
+    return response.status(404).json({ message: 'Unidade não encontrada' })
   }
+
+  // Garantir que data_saida seja um DateTime válido
+  if (payload.data_saida && typeof payload.data_saida === 'string') {
+    const parsedDate = DateTime.fromISO(payload.data_saida)
+    if (!parsedDate.isValid) {
+      return response.status(400).json({ message: 'Formato de data inválido. Use YYYY-MM-DD' })
+    }
+    payload.data_saida = parsedDate
+  }
+
+  const saida = await Saida.create(payload)
+  return response.status(201).json(saida)
+}
   
   public async show({ params }: HttpContext) {
     return await Saida.query()
@@ -113,18 +120,22 @@ export default class SaidasController {
       .firstOrFail()
   }
 
-  public async update({ params, request }: HttpContext) {
+  public async update({ params, request, response }: HttpContext) {
     const saida = await Saida.findOrFail(params.id)
-    const data = request.only(['descricao', 'valor', 'tipo', 'data_saida'])
+    const data = request.only(['descricao', 'valor', 'forma_pagamento', 'unidade_id'])
 
-    if (data.data_saida) {
-      data.data_saida = DateTime.fromISO(data.data_saida)
+    // Verificar se a nova unidade existe
+    if (data.unidade_id) {
+      const unidade = await Unidade.find(data.unidade_id)
+      if (!unidade) {
+        return response.status(404).json({ message: 'Unidade não encontrada' })
+      }
     }
 
     saida.merge(data)
     await saida.save()
-    return saida
-  }
+    return response.json(saida)
+}
 
   public async destroy({ params, response }: HttpContext) {
     const saida = await Saida.findOrFail(params.id)

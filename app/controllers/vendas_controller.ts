@@ -13,39 +13,41 @@ interface VendaData {
 }
 
 export default class VendasController {
+ 
   public async vendasPorDia({ request, response }: HttpContext) {
     try {
-      const { data } = request.only(['data'])
+      const { data, unidadeId } = request.only(['data', 'unidadeId'])
       const formattedDate = DateTime.fromISO(data).toFormat('yyyy-MM-dd')
 
-      const vendas = await Venda.query()
+      const query = Venda.query()
         .whereRaw('DATE(data_venda) = ?', [formattedDate])
         .preload('unidade')
         .preload('categoria')
 
-      const vendasPorData = {
-        data: formattedDate,
-        vendas: vendas.map(venda => ({
-          id: venda.id,
-          produto: venda.nome,
-          quantidade: venda.quantidade,
-          valor: venda.valor,
-          formaPagamento: venda.forma_pagamento,
-          unidade: {
-            id: venda.unidade.id,
-            nome: venda.unidade.nome
-          },
-          categoria: {
-            id: venda.categoria.id,
-            nome: venda.categoria.nome
-          }
-        }))
+      // Filtra por unidadeId se fornecido
+      if (unidadeId) {
+        query.where('unidade_id', unidadeId)
       }
+
+      const vendas = await query
 
       return response.status(200).json({
         success: true,
         message: 'Vendas recuperadas com sucesso',
-        data: vendasPorData
+        data: {
+          data: formattedDate,
+          unidadeId: unidadeId || null,
+          vendas: vendas.map(venda => ({
+            id: venda.id,
+            nome: venda.nome,
+            quantidade: venda.quantidade,
+            valor: venda.valor,
+            forma_pagamento: venda.forma_pagamento,
+            data_venda: venda.data_venda,
+            unidade: venda.unidade,
+            categoria: venda.categoria
+          }))
+        }
       })
     } catch (error) {
       return response.status(500).json({
@@ -54,7 +56,7 @@ export default class VendasController {
         error: error.message
       })
     }
-  }
+}
 
   public async store({ request, response }: HttpContext) {
     try {
@@ -71,7 +73,6 @@ export default class VendasController {
 
       const venda = await Venda.create(data)
       
-      // Carrega os relacionamentos com unidade e categoria
       await venda.load('unidade')
       await venda.load('categoria')
 
@@ -149,7 +150,6 @@ export default class VendasController {
       venda.merge(data)
       await venda.save()
 
-      // Carrega os relacionamentos atualizados
       await venda.load('unidade')
       await venda.load('categoria')
 
@@ -189,6 +189,46 @@ export default class VendasController {
       return response.status(400).json({
         success: false,
         message: 'Erro ao remover venda',
+        error: error.message
+      })
+    }
+  }
+
+  // Novo método para listar vendas por unidade
+  public async vendasPorUnidade({ request, response }: HttpContext) {
+    try {
+      const { unidadeId } = request.only(['unidadeId'])
+
+      const vendas = await Venda.query()
+        .where('unidade_id', unidadeId)
+        .preload('unidade')
+        .preload('categoria')
+        .orderBy('data_venda', 'desc')
+
+      return response.status(200).json({
+        success: true,
+        message: 'Vendas por unidade recuperadas com sucesso',
+        data: vendas.map(venda => ({
+          id: venda.id,
+          produto: venda.nome,
+          quantidade: venda.quantidade,
+          valor: venda.valor,
+          formaPagamento: venda.forma_pagamento,
+          data_venda: venda.data_venda,
+          unidade: {
+            id: venda.unidade.id,
+            nome: venda.unidade.nome
+          },
+          categoria: {
+            id: venda.categoria.id,
+            nome: venda.categoria.nome
+          }
+        }))
+      })
+    } catch (error) {
+      return response.status(500).json({
+        success: false,
+        message: 'Erro ao buscar vendas por unidade',
         error: error.message
       })
     }
