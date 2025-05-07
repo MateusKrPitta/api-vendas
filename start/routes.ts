@@ -6,6 +6,8 @@ import SaidasController from '#controllers/saidas_controller'
 import CategoriasController from '#controllers/categorias_controller'
 import RelatoriosMensaisController from '#controllers/relatorios_mensais_controller'
 import RelatoriosSaidasController from '#controllers/relatorios_saidas_controller'
+import DashboardsController from '#controllers/dashboard_controller'
+import ListaComprasController from '#controllers/lista_compras_controller'
 
 const AuthController = () => import('#controllers/auth_controller')
 const UnidadesController = () => import('#controllers/unidades_controller')
@@ -62,5 +64,12 @@ router.group(() => {
   router.post('/relatorios-saidas/gerar/:unidadeId/:ano/:mes', [RelatoriosSaidasController, 'gerarRelatorioMensal'])
   
   router.get('/relatorio-mensal/detalhado', 'RelatorioMensalDetalhadoController.detalhado')
+
+  router.get('/dashboard/:unidadeId', [DashboardsController, 'show'])
+
+  router.get('/lista-compras', [ListaComprasController, 'index' ])
+  router.post('/lista-compras', [ListaComprasController, 'store'])
+  router.delete('/lista-compras/:id', [ListaComprasController, 'destroy'])
+
 
 }).use(middleware.auth())
