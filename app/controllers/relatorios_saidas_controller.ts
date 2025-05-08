@@ -3,7 +3,6 @@ import { HttpContext } from '@adonisjs/core/http'
 import RelatorioSaida from '#models/relatorio_saida'
 import Saida from '#models/saida'
 import { DateTime } from 'luxon'
-import Unidade from '#models/unidade'
 
 export default class RelatoriosSaidasController {
   /**
