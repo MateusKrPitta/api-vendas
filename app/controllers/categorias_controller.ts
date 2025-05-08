@@ -5,9 +5,10 @@ import { HttpContext } from '@adonisjs/core/http'
 export default class CategoriasController {
   public async store({ request, response }: HttpContext) {
     try {
-      const data = request.only(['nome', 'unidade_id'])
+      const data = request.only(['nome', 'unidade_id']) // ou 'unidadeId' dependendo do seu modelo
 
-      const unidade = await Unidade.findOrFail(data.unidade_id)
+      // Verifica se a unidade existe (mas não precisamos armazenar em uma variável se não for usar)
+      await Unidade.findOrFail(data.unidade_id)
 
       const categoria = await Categoria.create(data)
 
