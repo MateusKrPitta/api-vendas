@@ -3,6 +3,7 @@ import RelatorioMensal from '#models/relatorio_mensal'
 import Venda from '#models/venda'
 import { DateTime } from 'luxon'
 import Unidade from '#models/unidade'
+import RelatorioMensalVenda from '#models/relatorio_mensal_venda'
 
 export default class RelatoriosMensaisController {
   /**
@@ -27,9 +28,7 @@ export default class RelatoriosMensaisController {
       })
     }
   }
-  /**
-   * Exibe um relatório específico
-   */
+
   public async show({ params, response }: HttpContext) {
     const { unidadeId,  } = params
 
@@ -67,20 +66,20 @@ export default class RelatoriosMensaisController {
         parseInt(mes)
       )
 
-      const relatorioSalvo = await RelatorioMensal.updateOrCreate(
+      const relatorioSalvo = await RelatorioMensalVenda.updateOrCreate(
         {
-          unidade_id: parseInt(unidadeId),
+          unidadeId: parseInt(unidadeId),
           ano: parseInt(ano),
           mes: parseInt(mes)
         },
         {
-          dados: relatorio,
           total_vendas: relatorio.totalVendas,
-          total_quantidade: relatorio.totalQuantidade,
-          total_valor: relatorio.totalValor
+          total_itens_vendidos: relatorio.totalQuantidade, // ajuste para corresponder ao modelo
+          total_valor: relatorio.totalValor,
+          // Adicione outros campos conforme necessário
         }
       )
-
+      
       return response.status(200).json({
         success: true,
         message: 'Relatório gerado com sucesso',
