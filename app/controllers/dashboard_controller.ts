@@ -4,7 +4,6 @@ import Dashboard from '#models/dashboard'
 import Unidade from '#models/unidade'
 import Venda from '#models/venda'
 import Saida from '#models/saida'
-import Categoria from '#models/categoria'
 import { DateTime } from 'luxon'
 
 export default class DashboardsController {
