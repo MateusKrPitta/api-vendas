@@ -58,6 +58,6 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare unidades: ManyToMany<typeof Unidade>
 
   static accessTokens = DbAccessTokensProvider.forModel(User, {
-    expiresIn: '120 mins',
+    expiresIn: '10 hours',
   })
 }
