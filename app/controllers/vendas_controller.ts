@@ -13,7 +13,7 @@ interface VendaData {
 }
 
 export default class VendasController {
- 
+
   public async vendasPorDia({ request, response }: HttpContext) {
     try {
       const { data, unidadeId } = request.only(['data', 'unidadeId'])
@@ -56,15 +56,15 @@ export default class VendasController {
         error: error.message
       })
     }
-}
+  }
 
   public async store({ request, response }: HttpContext) {
     try {
       const data = request.only([
-        'nome', 
-        'quantidade', 
-        'valor', 
-        'forma_pagamento', 
+        'nome',
+        'quantidade',
+        'valor',
+        'forma_pagamento',
         'unidade_id',
         'categoria_id'
       ]) as VendaData
@@ -72,7 +72,7 @@ export default class VendasController {
       data.data_venda = DateTime.local()
 
       const venda = await Venda.create(data)
-      
+
       await venda.load('unidade')
       await venda.load('categoria')
 
@@ -142,11 +142,11 @@ export default class VendasController {
         'categoria_id',
         'unidade_id'
       ])
-      
+
       if (data.data_venda) {
         data.data_venda = DateTime.fromISO(data.data_venda)
       }
-      
+
       venda.merge(data)
       await venda.save()
 
@@ -194,10 +194,59 @@ export default class VendasController {
     }
   }
 
+  public async storeWithCustomDate({ request, response }: HttpContext) {
+  try {
+    const payload = request.only([
+      'nome',
+      'quantidade',
+      'valor',
+      'forma_pagamento',
+      'unidade_id',
+      'categoria_id',
+      'data_venda' // Agora o front pode enviar a data
+    ]) as VendaData
+
+
+
+    const venda = await Venda.create(payload)
+
+    await venda.load('unidade')
+    await venda.load('categoria')
+
+    return response.status(201).json({
+      success: true,
+      message: 'Venda com data customizada cadastrada com sucesso',
+      data: {
+        id: venda.id,
+        nome: venda.nome,
+        quantidade: venda.quantidade,
+        valor: venda.valor,
+        forma_pagamento: venda.forma_pagamento,
+        data_venda: venda.data_venda,
+        unidade: venda.unidade,
+        categoria: venda.categoria
+      }
+    })
+  } catch (error) {
+    return response.status(400).json({
+      success: false,
+      message: 'Erro ao cadastrar venda com data customizada',
+      error: error.message
+    })
+  }
+}
+
   // Novo método para listar vendas por unidade
   public async vendasPorUnidade({ request, response }: HttpContext) {
     try {
       const { unidadeId } = request.only(['unidadeId'])
+
+      if (!unidadeId) {
+        return response.status(400).json({
+          success: false,
+          message: 'O parâmetro unidadeId é obrigatório'
+        })
+      }
 
       const vendas = await Venda.query()
         .where('unidade_id', unidadeId)

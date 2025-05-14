@@ -41,7 +41,7 @@ router.group(() => {
   router.get('/vendas/:id', [VendasController, 'show'])
   router.put('/vendas/:id', [VendasController, 'update'])
   router.delete('/vendas/:id', [VendasController, 'destroy'])
-
+  router.post('/vendas-diaria', [VendasController, 'storeWithCustomDate'])
   // Saídas
   router.get('/saidas', [SaidasController, 'index'])
   router.post('/saidas', [SaidasController, 'store'])
@@ -63,10 +63,10 @@ router.group(() => {
   router.delete('/relatorios-mensais/:id', [RelatoriosMensaisController, 'destroy'])
   router.get('/relatorios-mensais/unidade/:unidadeId', [RelatoriosMensaisController, 'porUnidade'])
     .where('unidadeId', router.matchers.number())
-  
+
   router.get('/relatorios-saidas/unidade/:unidadeId', [RelatoriosSaidasController, 'porUnidade'])
   router.post('/relatorios-saidas/gerar/:unidadeId/:ano/:mes', [RelatoriosSaidasController, 'gerarRelatorioMensal'])
-  
+
   router.get('/relatorio-mensal/detalhado', 'RelatorioMensalDetalhadoController.detalhado')
 
   // Dashboard
