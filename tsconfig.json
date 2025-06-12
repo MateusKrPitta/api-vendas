@@ -7,9 +7,9 @@
     "paths": {
       "#controllers/*": ["app/controllers/*"],
       "#models/*": ["app/models/*"],
-      "@adonisjs/core/*": ["./node_modules/@adonisjs/core/build/*"]
+      "@adonisjs/core/*": ["node_modules/@adonisjs/core/build/*"]
     }
   },
-  "include": ["**/*"],
-  "exclude": ["build", "node_modules"]
+  "include": ["app", "config", "database", "start", "contracts", "providers"],
+  "exclude": ["build", "node_modules", "tests"]
 }
