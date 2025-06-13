@@ -25,7 +25,7 @@ export default class CheckTokenMiddleware {
         status: false,
         message: 'Token inválido ou expirado. Faça login novamente.',
         code: 'TOKEN_INVALID_OR_EXPIRED',
-        debug: process.env.NODE_ENV === 'development' ? error.message : undefined,
+        debug: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined,
       })
     }
   }

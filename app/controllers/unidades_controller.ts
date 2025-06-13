@@ -18,7 +18,8 @@ export default class UnidadesController {
         data: unidade,
       })
     } catch (error) {
-      if (error.code === '23505') {
+      const err = error as any
+      if (err.code === '23505') {
         // Código de erro do PostgreSQL para chave duplicada
         return response.status(400).json({
           message: 'Já existe uma unidade com esse nome.',

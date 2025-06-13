@@ -43,7 +43,8 @@ export default class UsuariosController {
       await user.load('unidades')
       return user
     } catch (error) {
-      if (error.code === '23505' && error.detail?.includes('users_email_unique')) {
+      const err = error as any
+      if (err.code === '23505' && err.detail?.includes('users_email_unique')) {
         return response.status(400).json({ message: 'E-mail já cadastrado.' })
       }
       console.error(error)
