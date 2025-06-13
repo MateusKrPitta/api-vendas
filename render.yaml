@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: api-vendas
+    env: node
+    buildCommand: |
+      npm install
+      npm run build
+    startCommand: node build/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_KEY
+        generateValue: true
