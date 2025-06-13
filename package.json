@@ -5,9 +5,9 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "start": "node build/bin/server.js",
+    "start": "PORT=8080 node build/bin/server.js",
     "build": "npm install --ignore-engines && node ace build",
-    "dev": "node ace serve --hmr",
+    "dev": "PORT=8080 node ace serve --hmr",
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
