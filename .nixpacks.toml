@@ -1,0 +1,8 @@
+[variables]
+NODE_VERSION = "20.11.0"
+
+[phases.build]
+cmds = ["node ace build"]
+
+[start]
+cmd = "node build/bin/server.js"
