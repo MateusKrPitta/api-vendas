@@ -5,9 +5,10 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
+    "build": "rm -rf build && node ace build",
     "start": "node build/server.js",
-    "build": "node ace build",
     "dev": "node ace serve --watch",
+    "clean": "rm -rf node_modules build package-lock.json",
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
