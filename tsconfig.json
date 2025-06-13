@@ -4,7 +4,7 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "rootDir": "./",
+    "rootDir": ".", // Alterado de "./bin" para "."
     "outDir": "./build",
     "baseUrl": ".",
     "paths": {
@@ -30,6 +30,14 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["app", "config", "database", "start", "contracts", "providers"],
+  "include": [
+    "app/**/*",
+    "bin/**/*",
+    "config/**/*",
+    "database/**/*",
+    "start/**/*",
+    "contracts/**/*",
+    "providers/**/*"
+  ],
   "exclude": ["build", "node_modules", "tests"]
 }

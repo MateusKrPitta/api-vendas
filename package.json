@@ -5,7 +5,7 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "rm -rf build && node ace build",
+    "build": "tsc",
     "start": "node build/server.js",
     "dev": "node ace serve --watch",
     "clean": "rm -rf node_modules build package-lock.json",

@@ -1,0 +1,11 @@
+import Unidade from '#models/unidade';
+import { BaseSeeder } from '@adonisjs/lucid/seeders';
+export default class UnidadeSeeder extends BaseSeeder {
+    async run() {
+        await Unidade.create({
+            id: 1,
+            nome: 'Unidade Central',
+        });
+    }
+}
+//# sourceMappingURL=unidade_seeder.js.map
