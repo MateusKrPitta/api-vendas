@@ -9,12 +9,12 @@ export default class FornecedoresController {
       const fornecedores = await Fornecedor.query().where('status', 'ativo')
       return response.status(200).json({
         message: 'Fornecedores ativos listados com sucesso',
-        data: fornecedores
+        data: fornecedores,
       })
     } catch (error) {
       return response.status(500).json({
         message: 'Erro ao listar fornecedores',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -29,17 +29,17 @@ export default class FornecedoresController {
         nome: data.nome,
         telefone: data.telefone,
         observacao: data.observacao || null,
-        status: 'ativo'
+        status: 'ativo',
       })
-      
+
       return response.status(201).json({
         message: 'Fornecedor criado com sucesso',
-        data: fornecedor
+        data: fornecedor,
       })
     } catch (error) {
       return response.status(400).json({
         message: 'Erro ao criar fornecedor',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -51,12 +51,12 @@ export default class FornecedoresController {
       const fornecedor = await Fornecedor.findOrFail(params.id)
       return response.status(200).json({
         message: 'Fornecedor encontrado com sucesso',
-        data: fornecedor
+        data: fornecedor,
       })
     } catch (error) {
       return response.status(404).json({
         message: 'Fornecedor não encontrado',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -67,18 +67,18 @@ export default class FornecedoresController {
       await auth.use('api').authenticate()
       const fornecedor = await Fornecedor.findOrFail(params.id)
       const data = request.only(['nome', 'telefone', 'observacao', 'status'])
-      
+
       fornecedor.merge(data)
       await fornecedor.save()
-      
+
       return response.status(200).json({
         message: 'Fornecedor atualizado com sucesso',
-        data: fornecedor
+        data: fornecedor,
       })
     } catch (error) {
       return response.status(400).json({
         message: 'Erro ao atualizar fornecedor',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -88,25 +88,25 @@ export default class FornecedoresController {
     try {
       await auth.use('api').authenticate()
       const fornecedor = await Fornecedor.findOrFail(params.id)
-      
+
       if (fornecedor.status === 'inativo') {
-        return response.status(400).json({ 
+        return response.status(400).json({
           message: 'Fornecedor já está inativo',
-          data: fornecedor
+          data: fornecedor,
         })
       }
-      
+
       fornecedor.status = 'inativo'
       await fornecedor.save()
-      
-      return response.status(200).json({ 
+
+      return response.status(200).json({
         message: 'Fornecedor inativado com sucesso',
-        data: fornecedor
+        data: fornecedor,
       })
     } catch (error) {
       return response.status(400).json({
         message: 'Erro ao inativar fornecedor',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -116,25 +116,25 @@ export default class FornecedoresController {
     try {
       await auth.use('api').authenticate()
       const fornecedor = await Fornecedor.findOrFail(params.id)
-      
+
       if (fornecedor.status === 'ativo') {
-        return response.status(400).json({ 
+        return response.status(400).json({
           message: 'Fornecedor já está ativo',
-          data: fornecedor
+          data: fornecedor,
         })
       }
-      
+
       fornecedor.status = 'ativo'
       await fornecedor.save()
-      
-      return response.status(200).json({ 
+
+      return response.status(200).json({
         message: 'Fornecedor reativado com sucesso',
-        data: fornecedor
+        data: fornecedor,
       })
     } catch (error) {
       return response.status(400).json({
         message: 'Erro ao reativar fornecedor',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }

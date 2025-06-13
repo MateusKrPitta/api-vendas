@@ -7,7 +7,12 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('CASCADE')
-      table.integer('unidade_id').unsigned().references('id').inTable('unidades').onDelete('CASCADE')
+      table
+        .integer('unidade_id')
+        .unsigned()
+        .references('id')
+        .inTable('unidades')
+        .onDelete('CASCADE')
       table.unique(['user_id', 'unidade_id']) // Impede duplicatas
     })
   }

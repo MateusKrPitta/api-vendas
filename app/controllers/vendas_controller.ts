@@ -13,7 +13,6 @@ interface VendaData {
 }
 
 export default class VendasController {
-
   public async vendasPorDia({ request, response }: HttpContext) {
     try {
       const { data, unidadeId } = request.only(['data', 'unidadeId'])
@@ -37,7 +36,7 @@ export default class VendasController {
         data: {
           data: formattedDate,
           unidadeId: unidadeId || null,
-          vendas: vendas.map(venda => ({
+          vendas: vendas.map((venda) => ({
             id: venda.id,
             nome: venda.nome,
             quantidade: venda.quantidade,
@@ -45,15 +44,15 @@ export default class VendasController {
             forma_pagamento: venda.forma_pagamento,
             data_venda: venda.data_venda,
             unidade: venda.unidade,
-            categoria: venda.categoria
-          }))
-        }
+            categoria: venda.categoria,
+          })),
+        },
       })
     } catch (error) {
       return response.status(500).json({
         success: false,
         message: 'Erro ao buscar vendas',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -66,7 +65,7 @@ export default class VendasController {
         'valor',
         'forma_pagamento',
         'unidade_id',
-        'categoria_id'
+        'categoria_id',
       ]) as VendaData
 
       data.data_venda = DateTime.local()
@@ -87,14 +86,14 @@ export default class VendasController {
           forma_pagamento: venda.forma_pagamento,
           data_venda: venda.data_venda,
           unidade: venda.unidade,
-          categoria: venda.categoria
-        }
+          categoria: venda.categoria,
+        },
       })
     } catch (error) {
       return response.status(400).json({
         success: false,
         message: 'Erro ao cadastrar venda',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -118,14 +117,14 @@ export default class VendasController {
           forma_pagamento: venda.forma_pagamento,
           data_venda: venda.data_venda,
           unidade: venda.unidade,
-          categoria: venda.categoria
-        }
+          categoria: venda.categoria,
+        },
       })
     } catch (error) {
       return response.status(404).json({
         success: false,
         message: 'Venda não encontrada',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -140,7 +139,7 @@ export default class VendasController {
         'forma_pagamento',
         'data_venda',
         'categoria_id',
-        'unidade_id'
+        'unidade_id',
       ])
 
       if (data.data_venda) {
@@ -164,14 +163,14 @@ export default class VendasController {
           forma_pagamento: venda.forma_pagamento,
           data_venda: venda.data_venda,
           unidade: venda.unidade,
-          categoria: venda.categoria
-        }
+          categoria: venda.categoria,
+        },
       })
     } catch (error) {
       return response.status(400).json({
         success: false,
         message: 'Erro ao atualizar venda',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -183,58 +182,56 @@ export default class VendasController {
 
       return response.status(200).json({
         success: true,
-        message: 'Venda removida com sucesso'
+        message: 'Venda removida com sucesso',
       })
     } catch (error) {
       return response.status(400).json({
         success: false,
         message: 'Erro ao remover venda',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
 
   public async storeWithCustomDate({ request, response }: HttpContext) {
-  try {
-    const payload = request.only([
-      'nome',
-      'quantidade',
-      'valor',
-      'forma_pagamento',
-      'unidade_id',
-      'categoria_id',
-      'data_venda' // Agora o front pode enviar a data
-    ]) as VendaData
+    try {
+      const payload = request.only([
+        'nome',
+        'quantidade',
+        'valor',
+        'forma_pagamento',
+        'unidade_id',
+        'categoria_id',
+        'data_venda', // Agora o front pode enviar a data
+      ]) as VendaData
 
+      const venda = await Venda.create(payload)
 
+      await venda.load('unidade')
+      await venda.load('categoria')
 
-    const venda = await Venda.create(payload)
-
-    await venda.load('unidade')
-    await venda.load('categoria')
-
-    return response.status(201).json({
-      success: true,
-      message: 'Venda com data customizada cadastrada com sucesso',
-      data: {
-        id: venda.id,
-        nome: venda.nome,
-        quantidade: venda.quantidade,
-        valor: venda.valor,
-        forma_pagamento: venda.forma_pagamento,
-        data_venda: venda.data_venda,
-        unidade: venda.unidade,
-        categoria: venda.categoria
-      }
-    })
-  } catch (error) {
-    return response.status(400).json({
-      success: false,
-      message: 'Erro ao cadastrar venda com data customizada',
-      error: error.message
-    })
+      return response.status(201).json({
+        success: true,
+        message: 'Venda com data customizada cadastrada com sucesso',
+        data: {
+          id: venda.id,
+          nome: venda.nome,
+          quantidade: venda.quantidade,
+          valor: venda.valor,
+          forma_pagamento: venda.forma_pagamento,
+          data_venda: venda.data_venda,
+          unidade: venda.unidade,
+          categoria: venda.categoria,
+        },
+      })
+    } catch (error) {
+      return response.status(400).json({
+        success: false,
+        message: 'Erro ao cadastrar venda com data customizada',
+        error: (error as Error).message,
+      })
+    }
   }
-}
 
   // Novo método para listar vendas por unidade
   public async vendasPorUnidade({ request, response }: HttpContext) {
@@ -244,7 +241,7 @@ export default class VendasController {
       if (!unidadeId) {
         return response.status(400).json({
           success: false,
-          message: 'O parâmetro unidadeId é obrigatório'
+          message: 'O parâmetro unidadeId é obrigatório',
         })
       }
 
@@ -257,7 +254,7 @@ export default class VendasController {
       return response.status(200).json({
         success: true,
         message: 'Vendas por unidade recuperadas com sucesso',
-        data: vendas.map(venda => ({
+        data: vendas.map((venda) => ({
           id: venda.id,
           produto: venda.nome,
           quantidade: venda.quantidade,
@@ -266,19 +263,19 @@ export default class VendasController {
           data_venda: venda.data_venda,
           unidade: {
             id: venda.unidade.id,
-            nome: venda.unidade.nome
+            nome: venda.unidade.nome,
           },
           categoria: {
             id: venda.categoria.id,
-            nome: venda.categoria.nome
-          }
-        }))
+            nome: venda.categoria.nome,
+          },
+        })),
       })
     } catch (error) {
       return response.status(500).json({
         success: false,
         message: 'Erro ao buscar vendas por unidade',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }

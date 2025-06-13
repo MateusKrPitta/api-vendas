@@ -15,13 +15,13 @@ export default class CategoriasController {
       return response.status(201).json({
         success: true,
         message: 'Categoria cadastrada com sucesso',
-        data: categoria
+        data: categoria,
       })
     } catch (error) {
       return response.status(400).json({
         success: false,
         message: 'Erro ao cadastrar categoria',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -29,10 +29,8 @@ export default class CategoriasController {
   public async index({ request, response }: HttpContext) {
     try {
       const { unidade_id, inativos } = request.qs()
-      
-      const query = Categoria.query()
-        .where('unidade_id', unidade_id)
-        .preload('unidade')
+
+      const query = Categoria.query().where('unidade_id', unidade_id).preload('unidade')
 
       // Se não pedir explicitamente inativos, traz só os ativos
       if (!inativos) {
@@ -43,13 +41,13 @@ export default class CategoriasController {
 
       return response.status(200).json({
         success: true,
-        data: categorias
+        data: categorias,
       })
     } catch (error) {
       return response.status(400).json({
         success: false,
         message: 'Erro ao buscar categorias',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -65,13 +63,13 @@ export default class CategoriasController {
       return response.status(200).json({
         success: true,
         message: 'Categoria atualizada com sucesso',
-        data: categoria
+        data: categoria,
       })
     } catch (error) {
       return response.status(400).json({
         success: false,
         message: 'Erro ao atualizar categoria',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -79,11 +77,11 @@ export default class CategoriasController {
   public async ativar({ params, response }: HttpContext) {
     try {
       const categoria = await Categoria.findOrFail(params.id)
-      
+
       if (categoria.ativo) {
         return response.status(400).json({
           success: false,
-          message: 'Categoria já está ativa'
+          message: 'Categoria já está ativa',
         })
       }
 
@@ -93,13 +91,13 @@ export default class CategoriasController {
       return response.status(200).json({
         success: true,
         message: 'Categoria ativada com sucesso',
-        data: categoria
+        data: categoria,
       })
     } catch (error) {
       return response.status(400).json({
         success: false,
         message: 'Erro ao ativar categoria',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -107,11 +105,11 @@ export default class CategoriasController {
   public async inativar({ params, response }: HttpContext) {
     try {
       const categoria = await Categoria.findOrFail(params.id)
-      
+
       if (!categoria.ativo) {
         return response.status(400).json({
           success: false,
-          message: 'Categoria já está inativa'
+          message: 'Categoria já está inativa',
         })
       }
 
@@ -121,13 +119,13 @@ export default class CategoriasController {
       return response.status(200).json({
         success: true,
         message: 'Categoria inativada com sucesso',
-        data: categoria
+        data: categoria,
       })
     } catch (error) {
       return response.status(400).json({
         success: false,
         message: 'Erro ao inativar categoria',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }

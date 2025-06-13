@@ -31,5 +31,4 @@ export default class Fornecedor extends BaseModel {
   static softDelete = true
 
   public static table = 'fornecedores'
-
 }

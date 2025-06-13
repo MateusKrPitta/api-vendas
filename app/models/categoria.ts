@@ -13,9 +13,8 @@ export default class Categoria extends BaseModel {
   declare unidadeId: number
 
   @column()
-  public ativo: boolean = true 
+  public ativo: boolean = true
 
   @belongsTo(() => Unidade)
   public unidade!: BelongsTo<typeof Unidade>
-
 }

@@ -52,19 +52,20 @@ export default class AuthController {
             fullName: user.fullName,
             email: user.email,
             tipo: user.tipo,
-            unidades: user.unidades?.map(u => ({ // ← Usando operador opcional
-              id: u.id,
-              nome: u.nome
-            })) || [] // ← Fallback para array vazio
+            unidades:
+              user.unidades?.map((u) => ({
+                // ← Usando operador opcional
+                id: u.id,
+                nome: u.nome,
+              })) || [], // ← Fallback para array vazio
           },
         },
       })
-
     } catch (error) {
       return response.status(500).json({
         status: false,
         message: 'Erro durante o login',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }

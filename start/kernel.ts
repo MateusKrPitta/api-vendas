@@ -13,7 +13,7 @@ server.use([
 router.use([
   () => import('@adonisjs/core/bodyparser_middleware'), // ✅ Necessário para persistir sessão no contexto
   () => import('@adonisjs/auth/initialize_auth_middleware'),
-  () => import('@adonisjs/session/session_middleware')
+  () => import('@adonisjs/session/session_middleware'),
 ])
 
 export const middleware = router.named({

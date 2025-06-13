@@ -1,12 +1,7 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import {
-  BaseModel,
-  column,
-  belongsTo,
-  manyToMany,
-} from '@adonisjs/lucid/orm' // Adicione manyToMany aos imports
+import { BaseModel, column, belongsTo, manyToMany } from '@adonisjs/lucid/orm' // Adicione manyToMany aos imports
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations' // Adicione ManyToMany

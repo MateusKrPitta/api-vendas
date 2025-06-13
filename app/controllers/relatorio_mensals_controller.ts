@@ -10,8 +10,7 @@ export default class RelatorioMensalDetalhadoController {
     const fim = inicio.endOf('month')
 
     // Busca as vendas com join nas tabelas de unidade e categoria
-    const vendas = await Database
-      .from('vendas')
+    const vendas = await Database.from('vendas')
       .join('unidades', 'vendas.unidade_id', '=', 'unidades.id')
       .join('categorias', 'vendas.categoria_id', '=', 'categorias.id')
       .select(
@@ -50,23 +49,27 @@ export default class RelatorioMensalDetalhadoController {
     return response.json({
       unidade: {
         id: unidadeId,
-        nome: vendas[0]?.unidade_nome || 'Desconhecida'
+        nome: vendas[0]?.unidade_nome || 'Desconhecida',
       },
       [inicio.setLocale('pt-BR').toFormat('LLLL')]: {
         ano,
         mes,
         nomeMes: inicio.setLocale('pt-BR').toFormat('LLLL'),
         datas: dias,
-      }
+      },
     })
   }
 }
 
 function formaPagamentoTexto(codigo: number) {
   switch (codigo) {
-    case 1: return 'Dinheiro'
-    case 2: return 'Cartão'
-    case 3: return 'PIX'
-    default: return 'Desconhecido'
+    case 1:
+      return 'Dinheiro'
+    case 2:
+      return 'Cartão'
+    case 3:
+      return 'PIX'
+    default:
+      return 'Desconhecido'
   }
 }

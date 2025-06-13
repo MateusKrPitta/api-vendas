@@ -19,13 +19,12 @@ export default class Saida extends BaseModel {
 
   @column({ columnName: 'unidade_id' })
   declare unidadeId: number
-  
 
   // Data de saída (pode ser null)
   @column.dateTime({
     autoCreate: false,
     autoUpdate: false,
-    serialize: (value: DateTime | null) => value?.toISO() || null
+    serialize: (value: DateTime | null) => value?.toISO() || null,
   })
   declare data_saida: DateTime | null
 
@@ -40,7 +39,6 @@ export default class Saida extends BaseModel {
   // Data de atualização
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
-
 
   /**
    * Método seguro para obter data_saida como JavaScript Date

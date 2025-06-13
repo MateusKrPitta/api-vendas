@@ -17,7 +17,8 @@ export default class AuthMiddleware {
       await ctx.auth.authenticateUsing(options.guards, { loginRoute: this.redirectTo })
       return next()
     } catch (error) {
-      const isTokenExpired = error instanceof Error &&
+      const isTokenExpired =
+        error instanceof Error &&
         (error.message.includes('expired') ||
           error.message.includes('E_EXPIRED_TOKEN') ||
           error.message.includes('Token expired'))
@@ -33,10 +34,9 @@ export default class AuthMiddleware {
           message: isTokenExpired
             ? 'Sua sessão expirou. Por favor, faça login novamente.'
             : 'Sua sessão expirou. Por favor, faça login novamente.',
-          error: isTokenExpired ? 'E_EXPIRED_TOKEN' : 'E_UNAUTHORIZED_ACCESS'
+          error: isTokenExpired ? 'E_EXPIRED_TOKEN' : 'E_UNAUTHORIZED_ACCESS',
         })
       }
-
 
       return ctx.response.redirect(this.redirectTo)
     }

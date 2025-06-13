@@ -29,12 +29,10 @@ interface SaidasPorData {
 export default class SaidasController {
   public async index({ request }: HttpContext) {
     const { data } = request.only(['data'])
-  
+
     // 1. Criar query base
-    const query = Saida.query()
-      .preload('unidade')
-      .orderBy('data_saida', 'desc')
-  
+    const query = Saida.query().preload('unidade').orderBy('data_saida', 'desc')
+
     // 2. Filtrar por data se fornecida
     if (data) {
       try {
@@ -44,26 +42,24 @@ export default class SaidasController {
         }
         const inicioDoDia = parsedDate.startOf('day').toISO()
         const fimDoDia = parsedDate.endOf('day').toISO()
-        
-        query.whereBetween('data_saida', [inicioDoDia, fimDoDia])
-        
 
+        query.whereBetween('data_saida', [inicioDoDia, fimDoDia])
       } catch (error) {
         throw new Error('Formato de data inválido. Use YYYY-MM-DD')
       }
     }
-  
+
     // 3. Executar query e processar resultados
     const saidas = await query.exec()
-  
+
     const resultado = saidas.reduce((acc: SaidasPorData, saida) => {
       const dataSaida = saida.data_saida || saida.createdAt
       const dataKey = dataSaida?.isValid ? dataSaida.toFormat('dd-MM-yyyy') : 'Data inválida'
-    
+
       if (!acc[dataKey]) {
         acc[dataKey] = []
       }
-    
+
       acc[dataKey].push({
         id: saida.id,
         descricao: saida.descricao,
@@ -71,53 +67,49 @@ export default class SaidasController {
         unidade_id: saida.unidadeId,
         unidade: saida.unidade,
         forma_pagamento: saida.forma_pagamento,
-        data_registro: dataSaida?.toISO() ?? null
+        data_registro: dataSaida?.toISO() ?? null,
       })
-    
+
       return acc
     }, {} as SaidasPorData)
-    
-  
+
     // 5. Formatar resposta final
     return Object.entries(resultado).map(([data, saidas]) => ({
       data,
-      saidas
+      saidas,
     }))
   }
-// Modifique o método store para garantir que a unidade_id seja válida
-public async store({ request, response }: HttpContext) {
-  const payload = request.only([
-    'descricao',
-    'valor',
-    'unidade_id',
-    'forma_pagamento',
-    'data_saida'
-  ]) as SaidaData
+  // Modifique o método store para garantir que a unidade_id seja válida
+  public async store({ request, response }: HttpContext) {
+    const payload = request.only([
+      'descricao',
+      'valor',
+      'unidade_id',
+      'forma_pagamento',
+      'data_saida',
+    ]) as SaidaData
 
-  // Verificar se a unidade existe
-  const unidade = await Unidade.find(payload.unidade_id)
-  if (!unidade) {
-    return response.status(404).json({ message: 'Unidade não encontrada' })
-  }
-
-  // Garantir que data_saida seja um DateTime válido
-  if (payload.data_saida && typeof payload.data_saida === 'string') {
-    const parsedDate = DateTime.fromISO(payload.data_saida)
-    if (!parsedDate.isValid) {
-      return response.status(400).json({ message: 'Formato de data inválido. Use YYYY-MM-DD' })
+    // Verificar se a unidade existe
+    const unidade = await Unidade.find(payload.unidade_id)
+    if (!unidade) {
+      return response.status(404).json({ message: 'Unidade não encontrada' })
     }
-    payload.data_saida = parsedDate
+
+    // Garantir que data_saida seja um DateTime válido
+    if (payload.data_saida && typeof payload.data_saida === 'string') {
+      const parsedDate = DateTime.fromISO(payload.data_saida)
+      if (!parsedDate.isValid) {
+        return response.status(400).json({ message: 'Formato de data inválido. Use YYYY-MM-DD' })
+      }
+      payload.data_saida = parsedDate
+    }
+
+    const saida = await Saida.create(payload)
+    return response.status(201).json(saida)
   }
 
-  const saida = await Saida.create(payload)
-  return response.status(201).json(saida)
-}
-  
   public async show({ params }: HttpContext) {
-    return await Saida.query()
-      .where('id', params.id)
-      .preload('unidade')
-      .firstOrFail()
+    return await Saida.query().where('id', params.id).preload('unidade').firstOrFail()
   }
 
   public async update({ params, request, response }: HttpContext) {
@@ -135,7 +127,7 @@ public async store({ request, response }: HttpContext) {
     saida.merge(data)
     await saida.save()
     return response.json(saida)
-}
+  }
 
   public async destroy({ params, response }: HttpContext) {
     const saida = await Saida.findOrFail(params.id)

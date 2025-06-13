@@ -9,24 +9,17 @@ export default class UsuariosController {
 
   public async ativos({ auth }: HttpContext) {
     await auth.use('api').authenticate()
-    return await User.query()
-      .where('ativo', true)
-      .preload('unidades')
+    return await User.query().where('ativo', true).preload('unidades')
   }
 
   public async inativos({ auth }: HttpContext) {
     await auth.use('api').authenticate()
-    return await User.query()
-      .where('ativo', false)
-      .preload('unidades')
+    return await User.query().where('ativo', false).preload('unidades')
   }
 
   public async show({ auth, params }: HttpContext) {
     await auth.use('api').authenticate()
-    return await User.query()
-      .where('id', params.id)
-      .preload('unidades')
-      .firstOrFail()
+    return await User.query().where('id', params.id).preload('unidades').firstOrFail()
   }
 
   public async store({ auth, request, response }: HttpContext) {
@@ -38,7 +31,7 @@ export default class UsuariosController {
       const user = await User.create({
         ...data,
         ativo: true,
-        unidadeId: null // Opcional ou mantenha para compatibilidade
+        unidadeId: null, // Opcional ou mantenha para compatibilidade
       })
 
       // Associa as unidades
@@ -49,7 +42,6 @@ export default class UsuariosController {
       // Recarrega o usuário com as unidades para retornar
       await user.load('unidades')
       return user
-
     } catch (error) {
       if (error.code === '23505' && error.detail?.includes('users_email_unique')) {
         return response.status(400).json({ message: 'E-mail já cadastrado.' })

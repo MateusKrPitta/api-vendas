@@ -1,14 +1,34 @@
 {
   "extends": "@adonisjs/tsconfig/tsconfig.app.json",
   "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "rootDir": "./",
     "outDir": "./build",
     "baseUrl": ".",
     "paths": {
       "#controllers/*": ["app/controllers/*"],
       "#models/*": ["app/models/*"],
-      "@adonisjs/core/*": ["node_modules/@adonisjs/core/build/*"]
-    }
+      "#exceptions/*": ["app/exceptions/*"],
+      "#mails/*": ["app/mails/*"],
+      "#services/*": ["app/services/*"],
+      "#listeners/*": ["app/listeners/*"],
+      "#events/*": ["app/events/*"],
+      "#middleware/*": ["app/middleware/*"],
+      "#validators/*": ["app/validators/*"],
+      "#providers/*": ["providers/*"],
+      "#policies/*": ["app/policies/*"],
+      "#abilities/*": ["app/abilities/*"],
+      "#database/*": ["database/*"],
+      "#start/*": ["start/*"],
+      "#tests/*": ["tests/*"],
+      "#config/*": ["config/*"]
+    },
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
   },
   "include": ["app", "config", "database", "start", "contracts", "providers"],
   "exclude": ["build", "node_modules", "tests"]

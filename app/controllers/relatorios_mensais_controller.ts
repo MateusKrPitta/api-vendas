@@ -11,26 +11,24 @@ export default class RelatoriosMensaisController {
    */
   public async index({ response }: HttpContext) {
     try {
-      const relatorios = await RelatorioMensal.query()
-        .orderBy('ano', 'desc')
-        .orderBy('mes', 'desc')
+      const relatorios = await RelatorioMensal.query().orderBy('ano', 'desc').orderBy('mes', 'desc')
 
       return response.status(200).json({
         success: true,
         message: 'Relatórios listados com sucesso',
-        data: relatorios
+        data: relatorios,
       })
     } catch (error) {
       return response.status(500).json({
         success: false,
         message: 'Erro ao listar relatórios',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
 
   public async show({ params, response }: HttpContext) {
-    const { unidadeId,  } = params
+    const { unidadeId } = params
 
     try {
       const relatorio = await RelatorioMensal.query()
@@ -42,13 +40,13 @@ export default class RelatoriosMensaisController {
       return response.status(200).json({
         success: true,
         message: 'Relatório encontrado',
-        data: relatorio
+        data: relatorio,
       })
     } catch (error) {
       return response.status(404).json({
         success: false,
         message: 'Relatório não encontrado',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -61,16 +59,16 @@ export default class RelatoriosMensaisController {
 
     try {
       const relatorio = await this._gerarRelatorio(
-        parseInt(unidadeId),
-        parseInt(ano),
-        parseInt(mes)
+        Number.parseInt(unidadeId),
+        Number.parseInt(ano),
+        Number.parseInt(mes)
       )
 
       const relatorioSalvo = await RelatorioMensalVenda.updateOrCreate(
         {
-          unidadeId: parseInt(unidadeId),
-          ano: parseInt(ano),
-          mes: parseInt(mes)
+          unidadeId: Number.parseInt(unidadeId),
+          ano: Number.parseInt(ano),
+          mes: Number.parseInt(mes),
         },
         {
           total_vendas: relatorio.totalVendas,
@@ -79,17 +77,17 @@ export default class RelatoriosMensaisController {
           // Adicione outros campos conforme necessário
         }
       )
-      
+
       return response.status(200).json({
         success: true,
         message: 'Relatório gerado com sucesso',
-        data: relatorioSalvo
+        data: relatorioSalvo,
       })
     } catch (error) {
       return response.status(500).json({
         success: false,
         message: 'Erro ao gerar relatório',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -101,7 +99,7 @@ export default class RelatoriosMensaisController {
     const startDate = DateTime.fromObject({
       year: ano,
       month: mes,
-      day: 1
+      day: 1,
     })
     const endDate = startDate.endOf('month')
 
@@ -113,21 +111,25 @@ export default class RelatoriosMensaisController {
       .preload('categoria')
       .orderBy('data_venda', 'asc')
 
-    const vendasPorDia: Record<string, {
-      data: string
-      vendas: any[]
-      totalDia: number
-      totalQuantidadeDia: number
-    }> = {}
+    const vendasPorDia: Record<
+      string,
+      {
+        data: string
+        vendas: any[]
+        totalDia: number
+        totalQuantidadeDia: number
+      }
+    > = {}
 
     let totalVendas = 0
     let totalQuantidade = 0
     let totalValor = 0
 
     for (const venda of vendas) {
-      const dataVenda = venda.data_venda instanceof Date
-        ? DateTime.fromJSDate(venda.data_venda)
-        : DateTime.fromISO(venda.data_venda.toString())
+      const dataVenda =
+        venda.data_venda instanceof Date
+          ? DateTime.fromJSDate(venda.data_venda)
+          : DateTime.fromISO(venda.data_venda.toString())
 
       const dataFormatada = dataVenda.toFormat('yyyy-MM-dd')
 
@@ -136,7 +138,7 @@ export default class RelatoriosMensaisController {
           data: dataFormatada,
           vendas: [],
           totalDia: 0,
-          totalQuantidadeDia: 0
+          totalQuantidadeDia: 0,
         }
       }
 
@@ -148,12 +150,12 @@ export default class RelatoriosMensaisController {
         formaPagamento: venda.forma_pagamento,
         unidade: {
           id: venda.unidade.id,
-          nome: venda.unidade.nome
+          nome: venda.unidade.nome,
         },
         categoria: {
           id: venda.categoria.id,
-          nome: venda.categoria.nome
-        }
+          nome: venda.categoria.nome,
+        },
       })
 
       vendasPorDia[dataFormatada].totalDia += venda.valor
@@ -172,10 +174,9 @@ export default class RelatoriosMensaisController {
       totalVendas,
       totalQuantidade,
       totalValor,
-      vendasPorDia: Object.values(vendasPorDia)
+      vendasPorDia: Object.values(vendasPorDia),
     }
   }
-
 
   /**
    * Remove um relatório
@@ -187,13 +188,13 @@ export default class RelatoriosMensaisController {
 
       return response.status(200).json({
         success: true,
-        message: 'Relatório removido com sucesso'
+        message: 'Relatório removido com sucesso',
       })
     } catch (error) {
       return response.status(500).json({
         success: false,
         message: 'Erro ao remover relatório',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -202,31 +203,31 @@ export default class RelatoriosMensaisController {
     const { unidadeId } = params
 
     try {
-        // Verifica se a unidade existe
-        const unidade = await Unidade.find(unidadeId)
-        if (!unidade) {
-            return response.status(404).json({
-                success: false,
-                message: 'Unidade não encontrada'
-            })
-        }
-
-        // Calcula em tempo real (não usa relatórios salvos)
-        const relatorios = await this._calcularRelatoriosEmTempoReal(unidadeId)
-
-        return response.status(200).json({
-            success: true,
-            message: 'Dados calculados com sucesso',
-            data: relatorios
+      // Verifica se a unidade existe
+      const unidade = await Unidade.find(unidadeId)
+      if (!unidade) {
+        return response.status(404).json({
+          success: false,
+          message: 'Unidade não encontrada',
         })
+      }
+
+      // Calcula em tempo real (não usa relatórios salvos)
+      const relatorios = await this._calcularRelatoriosEmTempoReal(unidadeId)
+
+      return response.status(200).json({
+        success: true,
+        message: 'Dados calculados com sucesso',
+        data: relatorios,
+      })
     } catch (error) {
-        return response.status(500).json({
-            success: false,
-            message: 'Erro ao calcular relatórios',
-            error: error.message
-        })
+      return response.status(500).json({
+        success: false,
+        message: 'Erro ao calcular relatórios',
+        error: (error as Error).message,
+      })
     }
-}
+  }
   private async _calcularRelatoriosEmTempoReal(unidadeId: number) {
     const vendas = await Venda.query()
       .where('unidade_id', unidadeId)
@@ -238,9 +239,10 @@ export default class RelatoriosMensaisController {
 
     for (const venda of vendas) {
       // Convertendo a data corretamente
-      const dataVenda = venda.data_venda instanceof Date
-        ? DateTime.fromJSDate(venda.data_venda)
-        : DateTime.fromISO(venda.data_venda.toString())
+      const dataVenda =
+        venda.data_venda instanceof Date
+          ? DateTime.fromJSDate(venda.data_venda)
+          : DateTime.fromISO(venda.data_venda.toString())
 
       const chaveMes = `${dataVenda.year}-${dataVenda.month.toString().padStart(2, '0')}`
 
@@ -252,7 +254,7 @@ export default class RelatoriosMensaisController {
           vendas: [],
           totalVendas: 0,
           totalQuantidade: 0,
-          totalValor: 0
+          totalValor: 0,
         }
       }
 
@@ -264,7 +266,7 @@ export default class RelatoriosMensaisController {
         formaPagamento: venda.forma_pagamento,
         unidade: venda.unidade,
         categoria: venda.categoria,
-        data: dataVenda.toFormat('yyyy-MM-dd')
+        data: dataVenda.toFormat('yyyy-MM-dd'),
       })
 
       relatoriosPorMes[chaveMes].totalVendas++
@@ -274,5 +276,4 @@ export default class RelatoriosMensaisController {
 
     return Object.values(relatoriosPorMes)
   }
-
 }

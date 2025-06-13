@@ -19,7 +19,7 @@ export default class DashboardsController {
       if (!unidade) {
         return response.status(404).json({
           success: false,
-          message: 'Unidade não encontrada'
+          message: 'Unidade não encontrada',
         })
       }
 
@@ -29,13 +29,13 @@ export default class DashboardsController {
       return response.status(200).json({
         success: true,
         message: 'Dados do dashboard recuperados com sucesso',
-        data: dashboardData
+        data: dashboardData,
       })
     } catch (error) {
       return response.status(500).json({
         success: false,
         message: 'Erro ao calcular dados do dashboard',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
@@ -63,24 +63,23 @@ export default class DashboardsController {
 
     // 3. Quantidade de categorias distintas
     const categoriasCount = await Venda.query()
-    .where('unidade_id', unidadeId)
-    .countDistinct('categoria_id as total')
-    .first()
+      .where('unidade_id', unidadeId)
+      .countDistinct('categoria_id as total')
+      .first()
 
-  const quantidadeCategorias = Number(categoriasCount?.$extras.total || 0)
+    const quantidadeCategorias = Number(categoriasCount?.$extras.total || 0)
 
     // 4. Obter todas as categorias com quantidades vendidas
     const categoriasComQuantidade = await Venda.query()
-    .where('vendas.unidade_id', unidadeId) // <- aqui está a correção
-    .where('data_venda', '>=', startOfMonth.toJSDate())
-    .where('data_venda', '<=', endOfMonth.toJSDate())
-    .join('categorias', 'vendas.categoria_id', '=', 'categorias.id')
-    .groupBy('categorias.id', 'categorias.nome')
-    .select('categorias.id', 'categorias.nome')
-    .sum('vendas.quantidade as total_quantidade')
-    .sum('vendas.valor as total_valor')
-    .orderBy('total_quantidade', 'desc')
-  
+      .where('vendas.unidade_id', unidadeId) // <- aqui está a correção
+      .where('data_venda', '>=', startOfMonth.toJSDate())
+      .where('data_venda', '<=', endOfMonth.toJSDate())
+      .join('categorias', 'vendas.categoria_id', '=', 'categorias.id')
+      .groupBy('categorias.id', 'categorias.nome')
+      .select('categorias.id', 'categorias.nome')
+      .sum('vendas.quantidade as total_quantidade')
+      .sum('vendas.valor as total_valor')
+      .orderBy('total_quantidade', 'desc')
 
     // 5. Categorias mais vendidas (top 5)
     const categoriasMaisVendidas = categoriasComQuantidade.slice(0, 5)
@@ -100,19 +99,19 @@ export default class DashboardsController {
       valor_total_saidas: valorTotalSaidas,
       quantidade_categorias: quantidadeCategorias,
       // Todas as categorias com suas quantidades e valores
-      categorias: categoriasComQuantidade.map(cat => ({
+      categorias: categoriasComQuantidade.map((cat) => ({
         id: cat.id,
         nome: cat.nome,
         quantidade: cat.$extras.total_quantidade,
-        valor_total: cat.$extras.total_valor
+        valor_total: cat.$extras.total_valor,
       })),
       // Apenas as top 5 categorias mais vendidas
-      categorias_mais_vendidas: categoriasMaisVendidas.map(cat => ({
+      categorias_mais_vendidas: categoriasMaisVendidas.map((cat) => ({
         id: cat.id,
         nome: cat.nome,
         quantidade: cat.$extras.total_quantidade,
-        valor_total: cat.$extras.total_valor
-      }))
+        valor_total: cat.$extras.total_valor,
+      })),
     }
   }
 
@@ -120,13 +119,13 @@ export default class DashboardsController {
    * Atualiza ou cria um registro de dashboard no banco de dados
    * (Opcional - pode ser usado para cache)
    */
-// No método atualizar do controller
-public async atualizar({ params, response }: HttpContext) {
+  // No método atualizar do controller
+  public async atualizar({ params, response }: HttpContext) {
     const { unidadeId } = params
-  
+
     try {
       const dados = await this._calcularDadosDashboard(unidadeId)
-  
+
       const dashboard = await Dashboard.updateOrCreate(
         { unidadeId },
         {
@@ -135,20 +134,20 @@ public async atualizar({ params, response }: HttpContext) {
           valorTotalSaidas: dados.valor_total_saidas,
           quantidadeCategorias: dados.quantidade_categorias,
           categoriasMaisVendidas: dados.categorias_mais_vendidas,
-          categoriasComQuantidade: dados.categorias // Agora a propriedade existe no modelo
+          categoriasComQuantidade: dados.categorias, // Agora a propriedade existe no modelo
         }
       )
-  
+
       return response.status(200).json({
         success: true,
         message: 'Dashboard atualizado com sucesso',
-        data: dashboard
+        data: dashboard,
       })
     } catch (error) {
       return response.status(500).json({
         success: false,
         message: 'Erro ao atualizar dashboard',
-        error: error.message
+        error: (error as Error).message,
       })
     }
   }
