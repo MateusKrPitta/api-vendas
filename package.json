@@ -5,9 +5,13 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "tsc && cp bin/*.js build/bin/ && cp start/*.js build/start/ && cp -r app build/ && cp -r config build/ && cp -r database build/",
-    "start": "NODE_PATH=./build node build/bin/server.js",
-    "dev": "node ace serve --watch"
+    "start": "node build/bin/server.js",
+    "build": "node ace build",
+    "dev": "node ace serve --hmr",
+    "test": "node ace test",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
@@ -43,13 +47,13 @@
     "hot-hook": "^0.4.0",
     "pino-pretty": "^13.0.0",
     "prettier": "^3.5.0",
-    "typescript": "5.2.2"
+    "typescript": "~5.7"
   },
   "dependencies": {
     "@adonisjs/ace": "^13.3.0",
     "@adonisjs/auth": "^9.3.1",
-    "@adonisjs/cli": "^5.0.9",
-    "@adonisjs/core": "^6.18.0",
+    "@adonisjs/cli": "^4.0.13",
+    "@adonisjs/core": "^6.17.2",
     "@adonisjs/cors": "^2.2.1",
     "@adonisjs/lucid": "^21.6.1",
     "@adonisjs/session": "^7.5.1",
