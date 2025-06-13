@@ -1,16 +1,28 @@
 {
   "typescript": true,
   "directories": {
-    "config": "build/config",
-    "public": "public",
-    "contracts": "build/contracts",
-    "providers": "build/providers",
-    "database": "build/database",
-    "migrations": "build/database/migrations",
-    "seeders": "build/database/seeders",
-    "resources": "resources",
-    "start": "build/start",
-    "tmp": "tmp",
-    "tests": "build/tests"
-  }
+    "config": "./config",
+    "public": "./public",
+    "contracts": "./contracts",
+    "providers": "./providers",
+    "database": "./database",
+    "migrations": "./database/migrations",
+    "seeders": "./database/seeders",
+    "resources": "./resources",
+    "start": "./start",
+    "tmp": "./tmp",
+    "tests": "./tests"
+  },
+  "exceptionHandlerNamespace": "App/Exceptions/Handler",
+  "preloads": [
+    {
+      "file": "./start/routes",
+      "environment": ["web", "console"]
+    },
+    {
+      "file": "./start/kernel",
+      "environment": ["web", "console"]
+    }
+  ],
+  "commands": ["@adonisjs/assembler/build/commands"]
 }
