@@ -5,14 +5,9 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "tsc",
-    "start": "node bin/server.js",
-    "dev": "node ace serve --watch",
-    "clean": "rm -rf node_modules build package-lock.json",
-    "test": "node ace test",
-    "lint": "eslint .",
-    "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "build": "tsc && cp bin/*.js build/bin/ && cp start/*.js build/start/ && cp -r app build/ && cp -r config build/ && cp -r database build/",
+    "start": "NODE_PATH=./build node build/bin/server.js",
+    "dev": "node ace serve --watch"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
