@@ -6,12 +6,15 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node build/bin/server.js",
-    "build": "node ace build",
+    "build": "npm install --ignore-engines && node ace build",
     "dev": "node ace serve --hmr",
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20.6.0"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
@@ -53,7 +56,7 @@
     "@adonisjs/ace": "^13.3.0",
     "@adonisjs/auth": "^9.3.1",
     "@adonisjs/cli": "^4.0.13",
-    "@adonisjs/core": "^6.17.2",
+    "@adonisjs/core": "^6.18.0",
     "@adonisjs/cors": "^2.2.1",
     "@adonisjs/lucid": "^21.6.1",
     "@adonisjs/session": "^7.5.1",
