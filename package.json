@@ -50,6 +50,7 @@
     "typescript": "~5.7"
   },
   "dependencies": {
+    "@adonisjs/ace": "^13.3.0",
     "@adonisjs/auth": "^9.3.1",
     "@adonisjs/cli": "^4.0.13",
     "@adonisjs/core": "^6.17.2",
