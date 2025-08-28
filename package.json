@@ -5,9 +5,9 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "node ace build ",
+    "build": "node ace build",
     "migrate": "node ace migration:run --force",
-    "start": "node build/bin/server.js"
+    "start": "npm run build && node build/bin/server.js"
   },
   "engines": {
     "node": ">=20.6.0"
