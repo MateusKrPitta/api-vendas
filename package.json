@@ -5,9 +5,13 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "node ace build",
-    "start": "npm start",
-    "dev": "node ace serve --watch"
+    "start": "PORT=8080 node build/bin/server.js",
+    "build": "npm install --ignore-engines && node ace build",
+    "dev": "PORT=8080 node ace serve --hmr",
+    "test": "node ace test",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit"
   },
   "engines": {
     "node": ">=20.6.0"
