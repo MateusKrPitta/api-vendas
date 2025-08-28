@@ -10,7 +10,7 @@
     "start": "node build/bin/server.js"
   },
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
