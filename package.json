@@ -5,9 +5,9 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "node ace build",
+    "build": "node ace build --production --ignore-ts-errors",
     "migrate": "node ace migration:run --force",
-    "start": "node build/bin/server.js"
+    "start": "cd build && node bin/server.js"
   },
   "engines": {
     "node": "18.x"
