@@ -6,7 +6,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node ace serve --no-assets",
-    "build": "npm install --ignore-engines && node ace build --production",
+    "build": "npm install --ignore-engines && node ace build",
     "dev": "PORT=8080 node ace serve --hmr",
     "test": "node ace test",
     "lint": "eslint .",
