@@ -6,8 +6,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "node ace build",
-    "migrate": "node ace migration:run --force",
-    "start": "npm run build && node build/bin/server.js"
+    "start": "cd build && npm ci --omit=dev && node bin/server.js",
+    "dev": "node ace serve --watch"
   },
   "engines": {
     "node": ">=20.6.0"
