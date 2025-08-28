@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node ace build ",
     "migrate": "node ace migration:run --force",
-    "start": "cd build && node bin/server.js"
+    "start": "node build/bin/server.js"
   },
   "engines": {
     "node": ">=20.6.0"
