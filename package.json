@@ -5,12 +5,12 @@
   "type": "module",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "node ace build --production --ignore-ts-errors",
+    "build": "node ace build ",
     "migrate": "node ace migration:run --force",
     "start": "cd build && node bin/server.js"
   },
   "engines": {
-    "node": "18.x"
+    "node": ">=20.6.0"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
