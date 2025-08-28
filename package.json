@@ -6,7 +6,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "node ace build",
-    "start": "node build/bin/server.js"
+    "start": "node build/bin/server.js",
+    "postinstall": "node ace migration:run --force"
   },
   "engines": {
     "node": "18.x"
