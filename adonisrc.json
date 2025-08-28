@@ -24,5 +24,20 @@
       "environment": ["web", "console"]
     }
   ],
-  "commands": ["@adonisjs/assembler/build/commands"]
+  "commands": ["@adonisjs/assembler/build/commands"],
+  "providers": [
+    "@adonisjs/core/providers/AppProvider",
+    "@adonisjs/core/providers/HttpServerProvider",
+    "./providers/AppProvider"
+  ],
+  "metaFiles": [
+    {
+      "pattern": "public/**",
+      "reloadServer": false
+    },
+    {
+      "pattern": "resources/views/**/*.edge",
+      "reloadServer": false
+    }
+  ]
 }
