@@ -6,10 +6,10 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "node ace build",
-    "start": "node build/server.js"
+    "start": "node build/bin/server.js"
   },
   "engines": {
-    "node": ">=20.6.0"
+    "node": "18.x"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
