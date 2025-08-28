@@ -6,11 +6,11 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "node ace build",
-    "start": "node build/bin/server.js",
-    "postinstall": "node ace migration:run --force"
+    "migrate": "node ace migration:run --force",
+    "start": "npm run migrate && node build/bin/server.js"
   },
   "engines": {
-    "node": "18.x"
+    "node": "20.x"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",
